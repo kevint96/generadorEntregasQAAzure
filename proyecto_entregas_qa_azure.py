@@ -350,14 +350,14 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                     
                     break  # Solo salir de la fila actual
 
-def generar_documento(archivo_bytes, nombre_resultado, reemplazos, proyectos_osb_filas=None):
+def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
     # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
         # tmp.write(archivo_subido.read())
         # tmp_path = tmp.name
-    doc = Document(BytesIO(archivo_bytes))
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
-        doc.save(tmp.name)
-        return tmp.name
+    # doc = Document(BytesIO(archivo_bytes))
+    # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
+        # doc.save(tmp.name)
+        # return tmp.name
     #doc = Document(tmp_path)
     print_with_line_number(f"proyectos_osb_filas: {proyectos_osb_filas}")
     #doc = reemplazar_variables(doc, reemplazos)
