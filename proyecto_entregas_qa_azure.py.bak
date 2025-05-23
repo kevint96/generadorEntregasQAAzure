@@ -425,7 +425,7 @@ def main():
     with col6:
         num_servicenow = st.text_input("🆔 Número Servicenow")
     with col7:
-        num_hrv = st.text_input("🔢 Número Harvest", value="XXXX", key="num_hrv")
+        num_hrv = st.text_input("🔢 Número Harvest", value=st.session_state["num_hrv"])
     with col8:
         st.text_input("🧬 Consecutivo", value=1, disabled=True)
         #commit = st.text_input("🧬 Commit")
