@@ -1,0 +1,591 @@
+import streamlit as st
+import os
+import shutil
+from zipfile import ZipFile
+import zipfile
+import tempfile
+import subprocess
+from io import BytesIO
+from docx import Document
+from docx.shared import Pt
+from docx.shared import RGBColor
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.oxml import OxmlElement
+from docx.shared import Inches
+from docx.enum.section import WD_ORIENT
+from docx.shared import Cm
+import inspect
+import os
+import xml.etree.ElementTree as ET
+import gspread
+import time  # Importar el módulo time
+import logging
+import re
+import inspect
+import ast
+from datetime import datetime
+import difflib
+import glob
+import base64
+import sys
+import xml.etree.ElementTree as ET
+from collections import defaultdict
+from lxml import etree
+import json
+import zlib
+import urllib.parse
+import requests
+import concurrent.futures
+import asyncio
+import io
+from datetime import date
+import pandas as pd
+import copy
+
+def print_with_line_number(msg):
+    caller_frame = inspect.currentframe().f_back
+    line_number = caller_frame.f_lineno
+    st.success(f"Linea {line_number}: {msg}")
+    print("")
+
+def apply_format(run,fuente,size,negrita,color):
+    run.font.name = fuente  # Cambiar el nombre de la fuente
+    run.font.size = Pt(size)  # Cambiar el tamaño de la fuente
+    run.font.bold = negrita  # Aplicar negrita
+    run.font.color.rgb = RGBColor(0, 0, color)  # Cambiar el color del texto a rojo
+
+def replace_text_in_paragraph(paragraph, replacements):
+    full_text = paragraph.text
+    contador = 1
+    ##st.success(f"Texto en linea: {full_text}")
+    for key, value in replacements.items():
+        if key in full_text:
+            ##st.success(f"full_text: {full_text}")
+            ##st.success(f"p paragraphs: {paragraph.text}")
+            ##st.success(f"clave coincide: {key}")
+            full_text = full_text.replace(key, str(value))  # Actualiza full_text
+            
+            if key in '{acta}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            
+            if key in '{nombre_servicio}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+                
+            if key in '{fecha_hoy}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+                
+            if key in '{nombre_autor}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
+            
+            if key in '{num_hrv}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            
+            if key in '{num_iniciativa}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+                
+            if key in '{NUM_INICIATIVA}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            
+            if key in '{fecha_actual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',8,False,0)    # Aplicar formato al texto del párrafo
+                #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
+            
+            if key in '{descripcion_ajuste}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{proyecto_osb}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{num_rel}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{cksum}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{fecha_azure}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{branch}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,True,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{operacion}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{commit}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{num_hrv2}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{nombre_servicio2}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
+
+            if key in '{num_iniciativa2}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{nombre_servicio_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',14,True,0)  # Aplicar formato al texto del párrafo    
+            
+            if key in '{fecha_actual_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
+
+            if key in '{nombre_autor_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
+            
+            if key in '{proyecto_osb_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',10,False,0)  # Aplicar formato al texto del párrafo    
+
+            if key in '{num_hrv_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{nombre_servicio3}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
+            
+            if key in '{num_iniciativa_manual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo 
+
+            if key in '{bus}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{prueba}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{aut_puntual}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+
+            if key in '{aut_prod}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
+                
+            if key in '{num_servicenow}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
+            
+def print_element_content(element, element_name):
+    #st.success(f"Contenido del {element_name}:")
+    for paragraph in element.paragraphs:
+        print(paragraph.text)
+    for table in element.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    print(paragraph.text)
+
+def replace_text_in_element(element, replacements):
+    for paragraph in element.paragraphs:
+        replace_text_in_paragraph(paragraph, replacements)
+    for table in element.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    replace_text_in_paragraph(paragraph, replacements)
+
+def replace_text_in_doc(doc, replacements):
+    for p in doc.paragraphs:
+        replace_text_in_paragraph(p, replacements)
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    replace_text_in_paragraph(paragraph, replacements)
+
+    for section in doc.sections:
+        #st.success(f"Encabezado de la sección: {section.header}")
+        #print_element_content(section.header, "Encabezado de la sección")
+        replace_text_in_element(section.header, replacements)
+        #st.success(f"Pie de página de la sección: {section.footer}")
+        #print_element_content(section.footer, "Pie de página de la sección")
+        replace_text_in_element(section.footer, replacements)
+        # Agregamos este bloque específico para procesar las tablas dentro del encabezado de la sección 2
+        if "Encabezado-Sección 2-" in [paragraph.text for paragraph in section.header.paragraphs]:
+            # for table in section.header.tables:
+                # for row in table.rows:
+                    # for cell in row.cells:
+                        # for paragraph in cell.paragraphs:
+                            # print(paragraph.text)
+            for table in section.header.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for paragraph in cell.paragraphs:
+                            replace_text_in_paragraph(paragraph, replacements)
+    
+    
+    return doc
+
+
+def reemplazar_variables(doc: Document, reemplazos: dict):
+    def reemplazar_en_parrafo(parrafo):
+        texto_original = ''.join(run.text for run in parrafo.runs)
+        texto_nuevo = texto_original
+        for key, value in reemplazos.items():
+            texto_nuevo = texto_nuevo.replace(key, value)
+
+        if texto_nuevo != texto_original:
+            # Limpiar los runs existentes
+            for i in range(len(parrafo.runs) - 1, -1, -1):
+                parrafo._element.remove(parrafo.runs[i]._element)
+
+            # Crear nuevo run con estilo similar
+            nuevo_run = parrafo.add_run(texto_nuevo)
+            nuevo_run.bold = False  # Puedes ajustarlo si quieres conservar estilos
+            nuevo_run.italic = False
+
+    for p in doc.paragraphs:
+        reemplazar_en_parrafo(p)
+
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for p in cell.paragraphs:
+                    reemplazar_en_parrafo(p)
+
+    return doc
+
+def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_generales):
+    from copy import deepcopy
+    
+    print_with_line_number(f"reemplazos_generales: {reemplazos_generales}")
+    total_tablas = len(doc.tables)
+    print_with_line_number(f"total_tablas: {total_tablas}")
+    for table in doc.tables:
+        #print_with_line_number(f"table: {table}")
+        for i, row in enumerate(table.rows):
+            #print_with_line_number(f"index: {i}")
+            #print_with_line_number(f"row: {row}")
+            for cell in row.cells:
+                #print_with_line_number(f"cell.text: {cell.text}")
+                if "{proyecto_osb}" in cell.text:
+                    print_with_line_number(f"cell.text: {cell.text}")
+                    plantilla_row = table.rows[i]
+                    print_with_line_number(f"plantilla_row: {plantilla_row}")
+                    table._tbl.remove(plantilla_row._tr)
+                    for item in proyectos_osb_filas:
+                        reemplazos = reemplazos_generales.copy()
+                        reemplazos["{proyecto_osb}"] = item["proyecto_osb"]
+                        reemplazos["{num_rel}"] = item["num_rel"]
+                        reemplazos["{cksum}"] = item["cksum"]
+                        reemplazos["{commit}"] = item["commit"]
+                        # Copia profunda de la fila plantilla
+                        new_tr = deepcopy(plantilla_row._tr)
+                        table._tbl.append(new_tr)
+                        new_row = table.rows[-1]
+
+                        for j, cell_copy in enumerate(new_row.cells):
+                            texto_base = plantilla_row.cells[j].text
+                            for key, value in reemplazos.items():
+                                texto_base = texto_base.replace(key, value)
+                            
+                            cell_copy.text = ""  # Limpiar contenido
+                            p = cell_copy.paragraphs[0]
+                            run = p.add_run(texto_base)
+                            apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
+                    
+                    break  # Solo salir de la fila actual
+
+def generar_documento(archivo_subido, nombre_resultado, reemplazos, proyectos_osb_filas=None):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
+        tmp.write(archivo_subido.read())
+        tmp_path = tmp.name
+
+    doc = Document(tmp_path)
+    print_with_line_number(f"proyectos_osb_filas: {proyectos_osb_filas}")
+    #doc = reemplazar_variables(doc, reemplazos)
+    
+    if proyectos_osb_filas:
+        reemplazar_tabla_proyectos(doc, proyectos_osb_filas, reemplazos)
+    
+    doc_nuevo = replace_text_in_doc(doc, reemplazos)
+    output_path = os.path.join(tempfile.gettempdir(), nombre_resultado)
+    doc_nuevo.save(output_path)
+    return output_path
+
+def main():
+    st.set_page_config(layout="wide")
+    
+    if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
+        st.session_state["num_hrv"] = "XXXX"
+    # Centrar título con HTML + CSS
+    st.markdown(
+        """
+        <h1 style='text-align: center;'>
+            Generador Entregas QA Azure 
+        </h1>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Ajustar estilo visual
+    st.markdown(
+        """
+        <style>
+            /* Quitar los márgenes laterales del contenedor principal para que ocupe casi toda la pantalla */
+            .reportview-container .main .block-container {
+                max-width: 95vw;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .main .block-container {
+                max-width: 95%;
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            input, textarea, select {
+                font-size: 14px !important;
+            }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
+
+    # Fila 1
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        nombre_servicio = st.text_input("🛠️ Nombre del servicio")
+    with col2:
+        operacion = st.text_input("📡 Operación")
+    with col3:
+        nombre_autor = st.selectbox("👤 Nombre Autor", ["Kevin Torres", "Francisco Aviles", "Julian Orjuela"])
+    with col4:
+        bus = st.selectbox("👤 BUS", ["Otorgamiento", "Digital"])
+
+    # Fila 2
+    col5, col6, col7, col8 = st.columns(4)
+    with col5:
+        num_iniciativa = st.text_input("🆔 Número Iniciativa") 
+    with col6:
+        num_servicenow = st.text_input("🆔 Número Servicenow")
+    with col7:
+        num_hrv = st.text_input("🔢 Número Harvest", value="XXXX", key="num_hrv")
+    with col8:
+        st.text_input("🧬 Consecutivo", value=1, disabled=True)
+        #commit = st.text_input("🧬 Commit")
+        
+    # Fila 3
+    col9, col10, col11, col12 = st.columns(4)
+    with col9:
+        st.write("✅ Autorizaciones ➡️")
+        #st.subheader("✅ Autorizaciones")
+        # st.text_input("🛠️ Nombre del servicio", value=valor, disabled=True)
+    with col10:
+        prueba = st.checkbox("📡 Pruebas (Certificación)")
+    with col11:
+        aut_puntual = st.checkbox("📡 Con aut. (Validación puntual QA)")
+    with col12:
+        aut_prod = st.checkbox("📡 Con aut. (Producción)")
+    
+    # Construir la variable Acta
+    bo = "_BO" if bus == "Otorgamiento" else ""
+    id_iniciativa = num_iniciativa if num_iniciativa.strip() else num_servicenow
+    acta = f"MW{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}_1"
+    
+    # # Mostrar Acta no editable con HTML (readonly)
+    # st.markdown("### 📝 Acta generada")
+    # st.markdown(f"""
+        # <input type="text" value="{acta}" readonly style="width: 100%; padding: 0.5em; font-size: 1em;" />
+    # """, unsafe_allow_html=True)
+    st.text_input("📝 Acta", value=acta, disabled=True)
+    # Fila exclusiva para branch
+    
+    # Lógica para establecer el valor por defecto
+    if num_servicenow.strip():
+        default_index = 1  # hotfix
+    elif num_iniciativa.strip():
+        default_index = 0  # feature
+    else:
+        default_index = 0  # default por si ambos están vacíos
+    
+    branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index)
+
+    # Tabla editable de proyectos
+    st.markdown("### 🧩 Proyectos OSB (máximo 4)")
+    import pandas as pd
+
+    proyectos_default = pd.DataFrame({
+        "Proyecto OSB": ["", "", "", ""],
+        "Release": ["", "", "", ""],
+        "Checksum": ["", "", "", ""],
+        "Commit": ["", "", "", ""]
+    })
+
+    proyectos_input = st.data_editor(
+        proyectos_default,
+        num_rows="dynamic",
+        use_container_width=True,
+        key="proyectos_osb_input"
+    )
+
+    proyectos_osb = [
+        {
+            "proyecto_osb": row["Proyecto OSB"].strip(),
+            "num_rel": str(row["Release"]).strip(),
+            "cksum": str(row["Checksum"]).strip(),
+            "commit": str(row["Commit"]).strip()
+        }
+        for _, row in proyectos_input.iterrows()
+        if row["Proyecto OSB"] and row["Release"] and row["Checksum"] and row["Commit"]
+    ][:4]
+
+    # Descripción + archivos
+    descripcion_ajuste = st.text_area("📝 Descripción del ajuste")
+
+    col_file1, col_file2 = st.columns(2)
+    with col_file1:
+        plantilla_doc = st.file_uploader("📎 Plantilla base (documento principal)", type="docx")
+    with col_file2:
+        plantilla_manual = st.file_uploader("📎 Plantilla manual instalación", type="docx")
+
+    #submit = st.form_submit_button("📄 Generar documentos")
+
+    if st.button("📄 Generar documentos"):
+        if not plantilla_doc:
+            st.error("❌ Por favor, suba la plantilla base (documento principal).")
+        elif not plantilla_manual:
+            st.error("❌ Por favor, suba la plantilla manual de instalación.")
+        elif not proyectos_osb:
+            st.error("❌ Por favor, ingrese al menos un proyecto OSB válido.")
+        else:
+            fecha_actual = date.today().strftime("%Y-%m-%d")
+            fecha_hoy = date.today().strftime("%d/%m/%Y")
+            fecha_azure = date.today().strftime("%Y%m%d")
+            
+            proyecto_osb = proyectos_osb[0]["proyecto_osb"] if proyectos_osb else ""
+            num_rel = proyectos_osb[0]["num_rel"] if proyectos_osb else ""
+            cksum = proyectos_osb[0]["cksum"] if proyectos_osb else ""
+            commit = proyectos_osb[0]["commit"] if proyectos_osb else ""
+            prueba = "X" if prueba else ""
+            aut_puntual = "X" if aut_puntual else ""
+            aut_prod = "X" if aut_prod else ""
+            
+            #print_with_line_number(f"prueba: {prueba}")
+            #print_with_line_number(f"aut_puntual: {aut_puntual}")
+            #print_with_line_number(f"aut_prod: {aut_prod}")
+
+            reemplazos = {
+                "{fecha_actual}": fecha_actual,
+                "{fecha_hoy}": fecha_hoy,
+                "{fecha_azure}": fecha_azure,
+                "{nombre_servicio}": nombre_servicio,
+                "{nombre_servicio_manual}": nombre_servicio,
+                "{fecha_actual_manual}": fecha_actual,
+                "{nombre_autor_manual}": nombre_autor,
+                "{proyecto_osb_manual}": proyecto_osb,
+                "{num_hrv_manual}": num_hrv,
+                "{nombre_servicio3}": nombre_servicio,
+                "{num_iniciativa_manual}": id_iniciativa,
+                "{nombre_autor}": nombre_autor,
+                "{num_hrv}": num_hrv,
+                "{NUM_INICIATIVA}": id_iniciativa,
+                "{num_iniciativa}": num_iniciativa,
+                "{num_servicenow}": num_servicenow,
+                "{bus}": bus,
+                "{prueba}": prueba,
+                "{aut_puntual}": aut_puntual,
+                "{aut_prod}": aut_prod,
+                "{num_hrv2}": num_hrv,
+                "{nombre_servicio2}": nombre_servicio,
+                "{num_iniciativa2}": id_iniciativa,
+                "{descripcion_ajuste}": descripcion_ajuste,
+                "{proyecto_osb}": proyecto_osb,
+                "{operacion}": operacion,
+                "{commit}": commit,
+                "{num_rel}": num_rel,
+                "{cksum}": cksum,
+                "{branch}": branch,
+                "{acta}": acta
+            }
+
+            nombre_doc = f"{acta}.docx"
+            nombre_manual = f"Manual_Instalacion_OSB12C{bo}_{nombre_servicio}.docx"
+
+            path_out_doc = generar_documento(plantilla_doc, nombre_doc, reemplazos, proyectos_osb)
+            path_out_manual = generar_documento(plantilla_manual, nombre_manual, reemplazos)
+
+            # Nombre de carpeta interna dentro del .zip
+            carpeta_zip = f"MW{num_hrv}-{nombre_servicio}"
+
+            # Crear zip en memoria
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, "w") as zipf:
+                zipf.write(path_out_doc, arcname=f"{carpeta_zip}/{nombre_doc}")
+                zipf.write(path_out_manual, arcname=f"{carpeta_zip}/{nombre_manual}")
+
+            # Mostrar botón para descargar el zip
+            st.download_button(
+                label="📦 Descargar documentos (ZIP)",
+                data=zip_buffer.getvalue(),
+                file_name=f"{carpeta_zip}.zip",
+                mime="application/zip"
+            )
+
+if __name__ == "__main__":
+    main()
