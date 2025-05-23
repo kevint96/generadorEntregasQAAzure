@@ -498,12 +498,19 @@ def main():
 
     # Descripción + archivos
     descripcion_ajuste = st.text_area("📝 Descripción del ajuste")
+    
+    # Ruta relativa a las plantillas
+    RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
+    RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
 
-    col_file1, col_file2 = st.columns(2)
-    with col_file1:
-        plantilla_doc = st.file_uploader("📎 Plantilla base (documento principal)", type="docx")
-    with col_file2:
-        plantilla_manual = st.file_uploader("📎 Plantilla manual instalación", type="docx")
+    # Carga directa (sin subir)
+    plantilla_doc = Document(RUTA_BASE)
+    plantilla_manual = Document(RUTA_MANUAL)
+    # col_file1, col_file2 = st.columns(2)
+    # with col_file1:
+        # plantilla_doc = st.file_uploader("📎 Plantilla base (documento principal)", type="docx")
+    # with col_file2:
+        # plantilla_manual = st.file_uploader("📎 Plantilla manual instalación", type="docx")
 
     #submit = st.form_submit_button("📄 Generar documentos")
 

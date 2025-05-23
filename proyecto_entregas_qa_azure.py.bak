@@ -446,6 +446,7 @@ def main():
     # Construir la variable Acta
     bo = "_BO" if bus == "Otorgamiento" else ""
     id_iniciativa = num_iniciativa if num_iniciativa.strip() else num_servicenow
+    num_hrv = num_hrv if num_hrv.strip() else "XXXX"
     acta = f"MW{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}_1"
     
     # # Mostrar Acta no editable con HTML (readonly)
