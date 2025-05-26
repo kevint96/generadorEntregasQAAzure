@@ -350,6 +350,7 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                         reemplazos["{num_rel}"] = item["num_rel"]
                         reemplazos["{cksum}"] = item["cksum"]
                         reemplazos["{commit}"] = item["commit"]
+                        reemplazos["{fecha_azure}"] = item["fecha_azure"]
                         # Copia profunda de la fila plantilla
                         new_tr = deepcopy(plantilla_row._tr)
                         table._tbl.append(new_tr)
@@ -499,7 +500,8 @@ def main():
         "Proyecto OSB": ["", "", "", ""],
         "Release": ["", "", "", ""],
         "Checksum": ["", "", "", ""],
-        "Commit": ["", "", "", ""]
+        "Commit": ["", "", "", ""],
+        "Fecha Azure": ["", "", "", ""]
     })
 
     proyectos_input = st.data_editor(
@@ -514,10 +516,11 @@ def main():
             "proyecto_osb": row["Proyecto OSB"].strip(),
             "num_rel": str(row["Release"]).strip(),
             "cksum": str(row["Checksum"]).strip(),
-            "commit": str(row["Commit"]).strip()
+            "commit": str(row["Commit"]).strip(),
+            "fecha_azure": str(row["Fecha Azure"]).strip()
         }
         for _, row in proyectos_input.iterrows()
-        if row["Proyecto OSB"] and row["Release"] and row["Checksum"] and row["Commit"]
+        if row["Proyecto OSB"] and row["Release"] and row["Checksum"] and row["Commit"] and row["Fecha Azure"]
     ][:4]
 
     # Descripción + archivos
@@ -558,6 +561,7 @@ def main():
             num_rel = proyectos_osb[0]["num_rel"] if proyectos_osb else ""
             cksum = proyectos_osb[0]["cksum"] if proyectos_osb else ""
             commit = proyectos_osb[0]["commit"] if proyectos_osb else ""
+            fecha_azure = proyectos_osb[0]["fecha_azure"] if proyectos_osb else date.today().strftime("%Y%m%d")
             prueba = "X" if prueba else ""
             aut_puntual = "X" if aut_puntual else ""
             aut_prod = "X" if aut_prod else ""
