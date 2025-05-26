@@ -551,8 +551,8 @@ def main():
         elif not proyectos_osb:
             st.error("❌ Por favor, ingrese al menos un proyecto OSB válido.")
         elif not nombre_servicio.strip() or not operacion.strip():
-            st.error("❌ Por favor ingrese el nombre del servicio y operacion")
-        elif not not nombre_autor.strip() or not id_iniciativa.strip() or not num_hrv.strip():
+            st.error("❌ Por favor ingrese el nombre del servicio y operación")
+        elif not nombre_autor.strip() or not id_iniciativa.strip() or not num_hrv.strip():
             st.error("❌ Por favor ingrese el nombre del autor, iniciativa y numero harvest")
         elif not prueba or not aut_puntual or not aut_prod:
             st.error("❌ Por favor seleccione el tipo de autorización")
