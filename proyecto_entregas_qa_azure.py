@@ -363,7 +363,7 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                             cell_copy.text = ""  # Limpiar contenido
                             p = cell_copy.paragraphs[0]
                             run = p.add_run(texto_base)
-                            apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
+                            apply_format(run, fuente="Arial Narrow", size=12, negrita=False, color=0)
                     
                     break  # Solo salir de la fila actual
 
@@ -375,7 +375,7 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
 
             for item in reversed(proyectos_osb_filas):
                 new_p = doc.paragraphs[p_index].insert_paragraph_before(
-                    f"{item['proyecto_osb']}.jar", style=estilo_lista
+                    f"{item['proyecto_osb']}.sbar", style=estilo_lista
                 )
                 run = new_p.runs[0]
                 apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
