@@ -492,7 +492,10 @@ def main():
     
     branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index, disabled=True)
 
-    # Tabla por defecto
+    # Tabla editable de proyectos
+    st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
+    import pandas as pd
+
     proyectos_default = pd.DataFrame({
         "Proyecto OSB": ["", "", "", ""],
         "Release": ["", "", "", ""],
@@ -501,33 +504,13 @@ def main():
         "Fecha Azure": ["", "", "", ""]
     })
 
-    # Cargar desde sesión si existe, si no usar default
-    if "proyectos_osb_input" not in st.session_state:
-        st.session_state["proyectos_osb_input"] = proyectos_default.copy()
-
-    # Trabaja sobre el input del usuario
-    proyectos_actuales = st.session_state["proyectos_osb_input"]
-
-    # Actualiza fechas automáticamente al ingresar Proyecto OSB
-    for i in range(len(proyectos_actuales)):
-        proyecto = str(proyectos_actuales.loc[i, "Proyecto OSB"]).strip()
-        fecha = str(proyectos_actuales.loc[i, "Fecha Azure"]).strip()
-        if proyecto and not fecha:
-            proyectos_actuales.loc[i, "Fecha Azure"] = fecha_azure_auto
-
-    # Guardar en el estado actualizado
-    st.session_state["proyectos_osb_input"] = proyectos_actuales
-
-    # Mostrar título y editor editable
-    st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
     proyectos_input = st.data_editor(
-        proyectos_actuales,
+        proyectos_default,
         num_rows="dynamic",
         use_container_width=True,
-        key="proyectos_osb_input_editor"
+        key="proyectos_osb_input"
     )
 
-    # Procesar valores válidos
     proyectos_osb = [
         {
             "proyecto_osb": row["Proyecto OSB"].strip(),
@@ -572,12 +555,13 @@ def main():
         else:
             fecha_actual = date.today().strftime("%Y-%m-%d")
             fecha_hoy = date.today().strftime("%d/%m/%Y")
-
+            fecha_azure = date.today().strftime("%Y%m%d")
+            
             proyecto_osb = proyectos_osb[0]["proyecto_osb"] if proyectos_osb else ""
             num_rel = proyectos_osb[0]["num_rel"] if proyectos_osb else ""
             cksum = proyectos_osb[0]["cksum"] if proyectos_osb else ""
             commit = proyectos_osb[0]["commit"] if proyectos_osb else ""
-            fecha_azure = proyectos_osb[0]["fecha_azure"] if proyectos_osb else date.today().strftime("%Y%m%d")
+            fecha_azure = proyectos_osb[0]["fecha_azure"] if proyectos_osb else date.today().strftime("%Y%m%d")+'.1'
             prueba = "X" if prueba else ""
             aut_puntual = "X" if aut_puntual else ""
             aut_prod = "X" if aut_prod else ""
