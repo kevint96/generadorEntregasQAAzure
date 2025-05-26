@@ -525,9 +525,6 @@ def main():
         key="proyectos_osb_input"
     )
 
-    # Guardamos en session_state para la siguiente iteración
-    st.session_state["proyectos_osb_input"] = proyectos_input
-
     # Procesar valores válidos
     proyectos_osb = [
         {
