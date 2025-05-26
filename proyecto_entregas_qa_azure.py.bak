@@ -319,9 +319,9 @@ def reemplazar_variables(doc: Document, reemplazos: dict):
 def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_generales):
     from copy import deepcopy
     
-    print_with_line_number(f"reemplazos_generales: {reemplazos_generales}")
+   #print_with_line_number(f"reemplazos_generales: {reemplazos_generales}")
     total_tablas = len(doc.tables)
-    print_with_line_number(f"total_tablas: {total_tablas}")
+   #print_with_line_number(f"total_tablas: {total_tablas}")
     for table in doc.tables:
         #print_with_line_number(f"table: {table}")
         for i, row in enumerate(table.rows):
@@ -330,9 +330,9 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
             for cell in row.cells:
                 #print_with_line_number(f"cell.text: {cell.text}")
                 if "{proyecto_osb}" in cell.text:
-                    print_with_line_number(f"cell.text: {cell.text}")
+                   #print_with_line_number(f"cell.text: {cell.text}")
                     plantilla_row = table.rows[i]
-                    print_with_line_number(f"plantilla_row: {plantilla_row}")
+                   #print_with_line_number(f"plantilla_row: {plantilla_row}")
                     table._tbl.remove(plantilla_row._tr)
                     for item in proyectos_osb_filas:
                         reemplazos = reemplazos_generales.copy()
@@ -374,7 +374,7 @@ def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=Non
         # doc.save(tmp.name)
         # return tmp.name
     #doc = Document(tmp_path)
-    print_with_line_number(f"proyectos_osb_filas: {proyectos_osb_filas}")
+   #print_with_line_number(f"proyectos_osb_filas: {proyectos_osb_filas}")
     #doc = reemplazar_variables(doc, reemplazos)
     
     if proyectos_osb_filas:
@@ -585,6 +585,7 @@ def main():
                 "{descripcion_ajuste}": descripcion_ajuste,
                 "{descripcion_pruebas_sugeridas}": descripcion_pruebas_sugeridas,
                 "{proyecto_osb}": proyecto_osb,
+                "{lista_proyectos}": lista_proyectos,
                 "{operacion}": operacion,
                 "{commit}": commit,
                 "{num_rel}": num_rel,

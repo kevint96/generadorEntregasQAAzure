@@ -585,6 +585,7 @@ def main():
                 "{descripcion_ajuste}": descripcion_ajuste,
                 "{descripcion_pruebas_sugeridas}": descripcion_pruebas_sugeridas,
                 "{proyecto_osb}": proyecto_osb,
+                "{lista_proyectos}": lista_proyectos,
                 "{operacion}": operacion,
                 "{commit}": commit,
                 "{num_rel}": num_rel,
@@ -608,6 +609,7 @@ def main():
                 zipf.write(path_out_doc, arcname=f"{carpeta_zip}/{nombre_doc}")
                 zipf.write(path_out_manual, arcname=f"{carpeta_zip}/{nombre_manual}")
 
+            st.success(f"📄 Documentos generados: ✅ {carpeta_zip}")
             # Mostrar botón para descargar el zip
             st.download_button(
                 label="📦 Descargar documentos (ZIP)",
