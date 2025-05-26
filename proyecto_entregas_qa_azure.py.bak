@@ -561,7 +561,7 @@ def main():
             num_rel = proyectos_osb[0]["num_rel"] if proyectos_osb else ""
             cksum = proyectos_osb[0]["cksum"] if proyectos_osb else ""
             commit = proyectos_osb[0]["commit"] if proyectos_osb else ""
-            fecha_azure = proyectos_osb[0]["fecha_azure"] if proyectos_osb else date.today().strftime("%Y%m%d")
+            fecha_azure = proyectos_osb[0]["fecha_azure"] if proyectos_osb else date.today().strftime("%Y%m%d")+'.1'
             prueba = "X" if prueba else ""
             aut_puntual = "X" if aut_puntual else ""
             aut_prod = "X" if aut_prod else ""
