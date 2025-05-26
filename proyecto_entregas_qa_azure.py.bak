@@ -356,15 +356,25 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                             apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
                     
                     break  # Solo salir de la fila actual
-                    
-                elif "{proyecto_osb_lista}" in cell.text:
-                    # Reemplazo especial con lista con viñetas reales
-                    cell.text = ""  # Limpiar la celda
-                    for item in proyectos_osb_filas:
-                        p = cell.add_paragraph(style='ListBullet')
-                        run = p.add_run(f"{item['proyecto_osb']}.jar")
-                        apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
 
+    for paragraph in doc.paragraphs:
+        if "{proyecto_osb_lista}" in paragraph.text:
+            # Eliminar el párrafo original con el marcador
+            p_index = doc.paragraphs.index(paragraph)
+            p = paragraph._element
+            p.getparent().remove(p)
+
+            # Insertar los párrafos nuevos con viñetas
+            for item in proyectos_osb_filas:
+                new_p = doc.paragraphs[p_index].insert_paragraph_before(
+                    f"{item['proyecto_osb']}.jar", style="ListBullet"
+                )
+                run = new_p.runs[0]
+                apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
+
+            break  # Solo uno esperado
+    
+    
 def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
     if proyectos_osb_filas:
         reemplazar_tabla_proyectos(doc, proyectos_osb_filas, reemplazos)
