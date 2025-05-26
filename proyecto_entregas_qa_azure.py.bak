@@ -356,6 +356,14 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                             apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
                     
                     break  # Solo salir de la fila actual
+                    
+                elif "{lista_proyectos}" in cell.text:
+                    # Reemplazo especial con lista con viñetas reales
+                    cell.text = ""  # Limpiar la celda
+                    for item in proyectos_osb_filas:
+                        p = cell.add_paragraph(style='ListBullet')
+                        run = p.add_run(f"{item['proyecto_osb']}.jar")
+                        apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
 
 def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
     # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:

@@ -123,7 +123,7 @@ def replace_text_in_paragraph(paragraph, replacements):
             if key in '{descripcion_pruebas_sugeridas}':
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
-                apply_format(paragraph.runs[0],'Arial',8,False,0)  # Aplicar formato al texto del párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
             
             if key in '{proyecto_osb}':
                 paragraph.clear()  # Limpiar el párrafo
