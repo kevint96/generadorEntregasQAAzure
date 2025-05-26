@@ -363,7 +363,7 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                             cell_copy.text = ""  # Limpiar contenido
                             p = cell_copy.paragraphs[0]
                             run = p.add_run(texto_base)
-                            apply_format(run, fuente="Arial Narrow", size=12, negrita=False, color=0)
+                            apply_format(run, fuente="Arial Narrow", size=10, negrita=False, color=0)
                     
                     break  # Solo salir de la fila actual
 
@@ -547,6 +547,8 @@ def main():
             st.error("❌ Por favor, suba la plantilla manual de instalación.")
         elif not proyectos_osb:
             st.error("❌ Por favor, ingrese al menos un proyecto OSB válido.")
+        elif not nombre_servicio or not operacion or not nombre_autor or not id_iniciativa or not num_hrv:
+            st.error("❌ Por favor, ingrese todos los datos")
         else:
             fecha_actual = date.today().strftime("%Y-%m-%d")
             fecha_hoy = date.today().strftime("%d/%m/%Y")
