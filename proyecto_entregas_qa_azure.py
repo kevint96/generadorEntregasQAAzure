@@ -43,6 +43,7 @@ import pandas as pd
 import copy
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from docx.enum.style import WD_STYLE_TYPE
 
 def print_with_line_number(msg):
     caller_frame = inspect.currentframe().f_back
@@ -319,6 +320,15 @@ def reemplazar_variables(doc: Document, reemplazos: dict):
 def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_generales):
     from copy import deepcopy
     
+    def estilo_disponible(doc, estilo_nombre):
+        try:
+            _ = doc.styles[estilo_nombre]
+            return True
+        except KeyError:
+            return False
+
+    estilo_lista = "ListBullet" if estilo_disponible(doc, "ListBullet") else "Normal"
+    
    #print_with_line_number(f"reemplazos_generales: {reemplazos_generales}")
     total_tablas = len(doc.tables)
    #print_with_line_number(f"total_tablas: {total_tablas}")
@@ -357,22 +367,18 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                     
                     break  # Solo salir de la fila actual
 
+    # Reemplazo en párrafos: {proyecto_osb_lista}
     for i, paragraph in enumerate(doc.paragraphs):
         if "{proyecto_osb_lista}" in paragraph.text:
-            p_index = i  # Guarda el índice antes de eliminar
+            p_index = i
+            paragraph._element.getparent().remove(paragraph._element)
 
-            # Elimina el párrafo del marcador
-            p = paragraph._element
-            p.getparent().remove(p)
-
-            # Inserta nuevos párrafos con viñetas en esa posición
-            for item in reversed(proyectos_osb_filas):  # reversed para insertar en orden correcto
+            for item in reversed(proyectos_osb_filas):
                 new_p = doc.paragraphs[p_index].insert_paragraph_before(
-                    f"{item['proyecto_osb']}.jar", style="ListBullet"
+                    f"{item['proyecto_osb']}.jar", style=estilo_lista
                 )
                 run = new_p.runs[0]
                 apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
-
             break
     
     

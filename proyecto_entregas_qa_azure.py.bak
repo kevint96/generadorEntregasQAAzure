@@ -357,22 +357,23 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                     
                     break  # Solo salir de la fila actual
 
-    for paragraph in doc.paragraphs:
+    for i, paragraph in enumerate(doc.paragraphs):
         if "{proyecto_osb_lista}" in paragraph.text:
-            # Eliminar el párrafo original con el marcador
-            p_index = doc.paragraphs.index(paragraph)
+            p_index = i  # Guarda el índice antes de eliminar
+
+            # Elimina el párrafo del marcador
             p = paragraph._element
             p.getparent().remove(p)
 
-            # Insertar los párrafos nuevos con viñetas
-            for item in proyectos_osb_filas:
+            # Inserta nuevos párrafos con viñetas en esa posición
+            for item in reversed(proyectos_osb_filas):  # reversed para insertar en orden correcto
                 new_p = doc.paragraphs[p_index].insert_paragraph_before(
                     f"{item['proyecto_osb']}.jar", style="ListBullet"
                 )
                 run = new_p.runs[0]
                 apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
 
-            break  # Solo uno esperado
+            break
     
     
 def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
