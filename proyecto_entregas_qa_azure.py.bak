@@ -547,7 +547,7 @@ def main():
             st.error("❌ Por favor, suba la plantilla manual de instalación.")
         elif not proyectos_osb:
             st.error("❌ Por favor, ingrese al menos un proyecto OSB válido.")
-        elif not nombre_servicio or not operacion or not nombre_autor or not id_iniciativa or not num_hrv:
+        elif not nombre_servicio.strip() or not operacion.strip() or not nombre_autor.strip() or not id_iniciativa.strip() or not num_hrv.strip():
             st.error("❌ Por favor, ingrese todos los datos")
         else:
             fecha_actual = date.today().strftime("%Y-%m-%d")

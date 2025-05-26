@@ -489,7 +489,7 @@ def main():
     else:
         default_index = 0  # default por si ambos están vacíos
     
-    branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index)
+    branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index, disabled=True)
 
     # Tabla editable de proyectos
     st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
