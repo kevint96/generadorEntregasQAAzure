@@ -585,7 +585,6 @@ def main():
                 "{descripcion_ajuste}": descripcion_ajuste,
                 "{descripcion_pruebas_sugeridas}": descripcion_pruebas_sugeridas,
                 "{proyecto_osb}": proyecto_osb,
-                "{lista_proyectos}": proyecto_osb,
                 "{operacion}": operacion,
                 "{commit}": commit,
                 "{num_rel}": num_rel,
