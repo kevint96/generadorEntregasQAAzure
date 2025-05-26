@@ -492,37 +492,39 @@ def main():
     
     branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index, disabled=True)
 
-    # Tabla editable de proyectos
-    st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
-    import pandas as pd
-    
-    fecha_azure_auto = date.today().strftime("%Y%m%d")
-    # Si ya existe data editada, la usamos como base, si no, usamos default
+    # Tabla por defecto
+    proyectos_default = pd.DataFrame({
+        "Proyecto OSB": ["", "", "", ""],
+        "Release": ["", "", "", ""],
+        "Checksum": ["", "", "", ""],
+        "Commit": ["", "", "", ""],
+        "Fecha Azure": ["", "", "", ""]
+    })
+
+    # Cargar desde sesión si existe, si no usar default
     if "proyectos_osb_input" not in st.session_state:
-        proyectos_default = pd.DataFrame({
-            "Proyecto OSB": ["", "", "", ""],
-            "Release": ["", "", "", ""],
-            "Checksum": ["", "", "", ""],
-            "Commit": ["", "", "", ""],
-            "Fecha Azure": ["", "", "", ""]  # vacías por defecto
-        })
-    else:
-        proyectos_default = st.session_state["proyectos_osb_input"]
+        st.session_state["proyectos_osb_input"] = proyectos_default.copy()
 
-    # Auto-completar Fecha Azure si Proyecto OSB está lleno y Fecha Azure vacía
-    for i in range(len(proyectos_default)):
-        proyecto_osb = str(proyectos_default.loc[i, "Proyecto OSB"]).strip()
-        fecha_azure = str(proyectos_default.loc[i, "Fecha Azure"]).strip()
+    # Trabaja sobre el input del usuario
+    proyectos_actuales = st.session_state["proyectos_osb_input"]
 
-        if proyecto_osb and not fecha_azure:
-            proyectos_default.loc[i, "Fecha Azure"] = fecha_azure_auto
+    # Actualiza fechas automáticamente al ingresar Proyecto OSB
+    for i in range(len(proyectos_actuales)):
+        proyecto = str(proyectos_actuales.loc[i, "Proyecto OSB"]).strip()
+        fecha = str(proyectos_actuales.loc[i, "Fecha Azure"]).strip()
+        if proyecto and not fecha:
+            proyectos_actuales.loc[i, "Fecha Azure"] = fecha_azure_auto
 
-    # Mostrar editor
+    # Guardar en el estado actualizado
+    st.session_state["proyectos_osb_input"] = proyectos_actuales
+
+    # Mostrar título y editor editable
+    st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
     proyectos_input = st.data_editor(
-        proyectos_default,
+        proyectos_actuales,
         num_rows="dynamic",
         use_container_width=True,
-        key="proyectos_osb_input"
+        key="proyectos_osb_input_editor"
     )
 
     # Procesar valores válidos
