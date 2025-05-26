@@ -357,7 +357,7 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                     
                     break  # Solo salir de la fila actual
                     
-                elif "{lista_proyectos}" in cell.text:
+                elif "{proyecto_osb_lista}" in cell.text:
                     # Reemplazo especial con lista con viñetas reales
                     cell.text = ""  # Limpiar la celda
                     for item in proyectos_osb_filas:
@@ -574,6 +574,7 @@ def main():
                 "{descripcion_ajuste}": descripcion_ajuste,
                 "{descripcion_pruebas_sugeridas}": descripcion_pruebas_sugeridas,
                 "{proyecto_osb}": proyecto_osb,
+                "{proyecto_osb_lista}": proyecto_osb,
                 "{operacion}": operacion,
                 "{commit}": commit,
                 "{num_rel}": num_rel,

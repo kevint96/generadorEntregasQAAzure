@@ -366,17 +366,6 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                         apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
 
 def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
-    # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
-        # tmp.write(archivo_subido.read())
-        # tmp_path = tmp.name
-    # doc = Document(BytesIO(archivo_bytes))
-    # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
-        # doc.save(tmp.name)
-        # return tmp.name
-    #doc = Document(tmp_path)
-   #print_with_line_number(f"proyectos_osb_filas: {proyectos_osb_filas}")
-    #doc = reemplazar_variables(doc, reemplazos)
-    
     if proyectos_osb_filas:
         reemplazar_tabla_proyectos(doc, proyectos_osb_filas, reemplazos)
     
@@ -597,7 +586,7 @@ def main():
             nombre_manual = f"Manual_Instalacion_OSB12C{bo}_{nombre_servicio}.docx"
 
             path_out_doc = generar_documento(plantilla_doc, nombre_doc, reemplazos, proyectos_osb)
-            path_out_manual = generar_documento(plantilla_manual, nombre_manual, reemplazos)
+            path_out_manual = generar_documento(plantilla_manual, nombre_manual, reemplazos, proyectos_osb)
 
             # Nombre de carpeta interna dentro del .zip
             carpeta_zip = f"MW{num_hrv}-{nombre_servicio}"
