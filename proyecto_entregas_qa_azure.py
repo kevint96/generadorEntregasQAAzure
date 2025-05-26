@@ -41,6 +41,8 @@ import io
 from datetime import date
 import pandas as pd
 import copy
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 def print_with_line_number(msg):
     caller_frame = inspect.currentframe().f_back
@@ -114,6 +116,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
             
             if key in '{descripcion_ajuste}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{descripcion_pruebas_sugeridas}':
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial',8,False,0)  # Aplicar formato al texto del párrafo
@@ -349,6 +356,14 @@ def reemplazar_tabla_proyectos(doc: Document, proyectos_osb_filas, reemplazos_ge
                             apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
                     
                     break  # Solo salir de la fila actual
+                    
+                elif "{lista_proyectos}" in cell.text:
+                    # Reemplazo especial con lista con viñetas reales
+                    cell.text = ""  # Limpiar la celda
+                    for item in proyectos_osb_filas:
+                        p = cell.add_paragraph(style='ListBullet')
+                        run = p.add_run(f"{item['proyecto_osb']}.jar")
+                        apply_format(run, fuente="Arial Narrow", size=8, negrita=False, color=0)
 
 def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=None):
     # with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as tmp:
@@ -471,7 +486,7 @@ def main():
     branch = st.selectbox("🌱 Branch", ["feature", "hotfix"], index=default_index)
 
     # Tabla editable de proyectos
-    st.markdown("### 🧩 Proyectos OSB (máximo 4)")
+    st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
     import pandas as pd
 
     proyectos_default = pd.DataFrame({
@@ -500,7 +515,9 @@ def main():
     ][:4]
 
     # Descripción + archivos
-    descripcion_ajuste = st.text_area("📝 Descripción del ajuste")
+    descripcion_ajuste = st.text_area("📝 Descripción funcional del ajuste")
+    
+    descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
     # Ruta relativa a las plantillas
     RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
@@ -566,6 +583,7 @@ def main():
                 "{nombre_servicio2}": nombre_servicio,
                 "{num_iniciativa2}": id_iniciativa,
                 "{descripcion_ajuste}": descripcion_ajuste,
+                "{descripcion_pruebas_sugeridas}": descripcion_pruebas_sugeridas,
                 "{proyecto_osb}": proyecto_osb,
                 "{operacion}": operacion,
                 "{commit}": commit,
