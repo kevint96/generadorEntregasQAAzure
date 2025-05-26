@@ -495,15 +495,26 @@ def main():
     # Tabla editable de proyectos
     st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
     import pandas as pd
+    
+    fecha_azure_auto = date.today().strftime("%Y%m%d")
+    # Si ya existe data editada, la usamos como base, si no, usamos default
+    if "proyectos_osb_input" not in st.session_state:
+        proyectos_default = pd.DataFrame({
+            "Proyecto OSB": ["", "", "", ""],
+            "Release": ["", "", "", ""],
+            "Checksum": ["", "", "", ""],
+            "Commit": ["", "", "", ""],
+            "Fecha Azure": ["", "", "", ""]  # vacías por defecto
+        })
+    else:
+        proyectos_default = st.session_state["proyectos_osb_input"]
 
-    proyectos_default = pd.DataFrame({
-        "Proyecto OSB": ["", "", "", ""],
-        "Release": ["", "", "", ""],
-        "Checksum": ["", "", "", ""],
-        "Commit": ["", "", "", ""],
-        "Fecha Azure": ["", "", "", ""]
-    })
+    # Auto-completar Fecha Azure si Proyecto OSB está lleno y Fecha Azure vacía
+    for i in range(len(proyectos_default)):
+        if proyectos_default.loc[i, "Proyecto OSB"].strip() and not str(proyectos_default.loc[i, "Fecha Azure"]).strip():
+            proyectos_default.loc[i, "Fecha Azure"] = fecha_azure_auto
 
+    # Mostrar editor
     proyectos_input = st.data_editor(
         proyectos_default,
         num_rows="dynamic",
@@ -511,6 +522,10 @@ def main():
         key="proyectos_osb_input"
     )
 
+    # Guardamos en session_state para la siguiente iteración
+    st.session_state["proyectos_osb_input"] = proyectos_input
+
+    # Procesar valores válidos
     proyectos_osb = [
         {
             "proyecto_osb": row["Proyecto OSB"].strip(),
@@ -555,8 +570,7 @@ def main():
         else:
             fecha_actual = date.today().strftime("%Y-%m-%d")
             fecha_hoy = date.today().strftime("%d/%m/%Y")
-            fecha_azure = date.today().strftime("%Y%m%d")
-            
+
             proyecto_osb = proyectos_osb[0]["proyecto_osb"] if proyectos_osb else ""
             num_rel = proyectos_osb[0]["num_rel"] if proyectos_osb else ""
             cksum = proyectos_osb[0]["cksum"] if proyectos_osb else ""

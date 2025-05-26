@@ -511,7 +511,10 @@ def main():
 
     # Auto-completar Fecha Azure si Proyecto OSB está lleno y Fecha Azure vacía
     for i in range(len(proyectos_default)):
-        if proyectos_default.loc[i, "Proyecto OSB"].strip() and not str(proyectos_default.loc[i, "Fecha Azure"]).strip():
+        proyecto_osb = str(proyectos_default.loc[i, "Proyecto OSB"]).strip()
+        fecha_azure = str(proyectos_default.loc[i, "Fecha Azure"]).strip()
+
+        if proyecto_osb and not fecha_azure:
             proyectos_default.loc[i, "Fecha Azure"] = fecha_azure_auto
 
     # Mostrar editor
