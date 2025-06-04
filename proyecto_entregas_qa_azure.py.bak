@@ -554,7 +554,7 @@ def main():
             st.error("❌ Por favor ingrese el nombre del servicio y operación")
         elif not nombre_autor.strip() or not id_iniciativa.strip() or not num_hrv.strip():
             st.error("❌ Por favor ingrese el nombre del autor, iniciativa y numero harvest")
-        elif not prueba or not aut_puntual or not aut_prod:
+        elif not(prueba or aut_puntual or aut_prod):
             st.error("❌ Por favor seleccione el tipo de autorización")
         else:
             fecha_actual = date.today().strftime("%Y-%m-%d")

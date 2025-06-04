@@ -441,7 +441,7 @@ def main():
     with col3:
         nombre_autor = st.selectbox("👤 Nombre Autor", ["Kevin Torres", "Francisco Aviles", "Julian Orjuela"])
     with col4:
-        bus = st.selectbox("👤 BUS", ["Otorgamiento", "Digital"])
+        bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
     # Fila 2
     col5, col6, col7, col8 = st.columns(4)
