@@ -459,7 +459,7 @@ def main():
     col9, col10, col11, col12 = st.columns(4)
     with col9:
         #st.write("✅ Autorizaciones ➡️")
-        tipo_acta = st.checkbox("✅ Tipo Acta: Harvest/Azure")
+        tipo_acta = st.checkbox("Tipo Acta: Azure")
         #st.selectbox("💻 Tipo Acta", ["Harvest", "Azure"])
         #st.subheader("✅ Autorizaciones")
         # st.text_input("🛠️ Nombre del servicio", value=valor, disabled=True)
@@ -473,14 +473,14 @@ def main():
     # Construir la variable Acta
     inicial_acta = "MW"
     bo = "_BO" if bus == "Otorgamiento" else ""
-    if not tipo_acta:
+    if tipo_acta:
         inicial_acta ="AMW"
     id_iniciativa = num_iniciativa if num_iniciativa.strip() else num_servicenow
     
     if num_hrv.strip():
         num_hrv = num_hrv
     else:
-        if not tipo_acta:
+        if tipo_acta:
             num_hrv = "XXXXX"
         else:
             num_hrv = "XXXX"
