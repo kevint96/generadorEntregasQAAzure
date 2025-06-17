@@ -396,7 +396,7 @@ def main():
     st.set_page_config(layout="wide")
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
-        st.session_state["num_hrv"] = "XXXX"
+        st.session_state["num_hrv"] = "XXXXX"
     # Centrar título con HTML + CSS
     st.markdown(
         """
@@ -458,7 +458,8 @@ def main():
     # Fila 3
     col9, col10, col11, col12 = st.columns(4)
     with col9:
-        st.write("✅ Autorizaciones ➡️")
+        #st.write("✅ Autorizaciones ➡️")
+        tipo_acta = st.selectbox("💻 Tipo Acta", ["Harvest", "Azure"])
         #st.subheader("✅ Autorizaciones")
         # st.text_input("🛠️ Nombre del servicio", value=valor, disabled=True)
     with col10:
@@ -469,10 +470,20 @@ def main():
         aut_prod = st.checkbox("📡 Con aut. (Producción)")
     
     # Construir la variable Acta
+    inicial_acta = "MW"
     bo = "_BO" if bus == "Otorgamiento" else ""
+    if tipo_acta == "Azure":
+        inicial_acta ="AMW"
     id_iniciativa = num_iniciativa if num_iniciativa.strip() else num_servicenow
-    num_hrv = num_hrv if num_hrv.strip() else "XXXX"
-    acta = f"MW{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}_1"
+    
+    if num_hrv.strip():
+        num_hrv = num_hrv
+    else:
+        if tipo_acta == "Azure":
+            num_hrv = "XXXXX"
+        else:
+            num_hrv = "XXXX"
+    acta = f"{inicial_acta}{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}_1"
     
     # # Mostrar Acta no editable con HTML (readonly)
     # st.markdown("### 📝 Acta generada")
@@ -617,7 +628,7 @@ def main():
             path_out_manual = generar_documento(plantilla_manual, nombre_manual, reemplazos, proyectos_osb)
 
             # Nombre de carpeta interna dentro del .zip
-            carpeta_zip = f"MW{num_hrv}-{nombre_servicio}"
+            carpeta_zip = f"{inicial_acta}{num_hrv}-{nombre_servicio}"
 
             # Crear zip en memoria
             zip_buffer = io.BytesIO()
