@@ -628,7 +628,7 @@ def main():
             path_out_manual = generar_documento(plantilla_manual, nombre_manual, reemplazos, proyectos_osb)
 
             # Nombre de carpeta interna dentro del .zip
-            carpeta_zip = f"MW{num_hrv}-{nombre_servicio}"
+            carpeta_zip = f"{inicial_acta}{num_hrv}-{nombre_servicio}"
 
             # Crear zip en memoria
             zip_buffer = io.BytesIO()
