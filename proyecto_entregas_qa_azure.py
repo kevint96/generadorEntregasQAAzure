@@ -506,11 +506,11 @@ def main():
     
     branch_completo = f"{branch}/{inicial_acta}{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}"
     
-    st.text_input("🌱 Branch git", value=branch_completo, disabled=True)
+    st.text_input("🌴 Branch git", value=branch_completo, disabled=True)
     
     checkout = f"git checkout -b {branch_completo} origin/{branch_completo}"
     
-    st.text_input("🌱 Checkout branch", value=checkout, disabled=True)
+    st.text_input("🔀 Checkout branch", value=checkout, disabled=True)
     
     # Tabla editable de proyectos
     st.markdown("### 🧩 Proyectos OSB (máximo 4 - En orden de instalación)")
