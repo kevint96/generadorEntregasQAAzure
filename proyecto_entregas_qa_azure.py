@@ -51,11 +51,14 @@ def print_with_line_number(msg):
     st.success(f"Linea {line_number}: {msg}")
     print("")
 
-def apply_format(run,fuente,size,negrita,color):
+def apply_format(run,fuente,size,negrita,color,highlight=None):
     run.font.name = fuente  # Cambiar el nombre de la fuente
     run.font.size = Pt(size)  # Cambiar el tamaño de la fuente
     run.font.bold = negrita  # Aplicar negrita
     run.font.color.rgb = RGBColor(0, 0, color)  # Cambiar el color del texto a rojo
+    
+    if highlight:  # Color de resaltado
+        run.font.highlight_color = highlight
 
 def replace_text_in_paragraph(paragraph, replacements):
     full_text = paragraph.text
@@ -190,6 +193,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
+                
+            if key in '{endpoint}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo    
 
             if key in '{nombre_autor_manual}':
                 paragraph.clear()  # Limpiar el párrafo
@@ -397,7 +405,19 @@ def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=Non
     doc_nuevo.save(output_path)
     return output_path
 
+def cargar_autores():
+    if os.path.exists(RUTA_AUTORES):
+        with open(RUTA_AUTORES, "r", encoding="utf-8") as f:
+            return sorted(set(line.strip() for line in f if line.strip()))
+    return []
+
+def guardar_autor(nuevo_autor):
+    with open(RUTA_AUTORES, "a", encoding="utf-8") as f:
+        f.write(f"{nuevo_autor}\n")
+
+
 def main():
+    RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
     st.set_page_config(layout="wide")
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
@@ -444,7 +464,13 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        nombre_autor = st.selectbox("👤 Nombre Autor", ["Kevin Torres", "Francisco Aviles", "Julian Orjuela"])
+        autores = cargar_autores()
+        nombre_autor = st.selectbox("👤 Nombre Autor", autores + ["📝 Agregar nuevo..."])
+        if autor_seleccionado == "📝 Agregar nuevo...":
+            nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
+            if nuevo_autor and st.button("Agregar autor"):
+                guardar_autor(nuevo_autor)
+                st.success(f"Autor '{nuevo_autor}' agregado correctamente. Recarga para verlo en la lista.")
     with col4:
         bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
@@ -553,9 +579,16 @@ def main():
     
     descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
+    nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
+    
+    endpoint = st.text_input("🛠️ Url OHS")
+    
     # Ruta relativa a las plantillas
     RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
     RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
+    
+    if not nuevo_endpoint:
+        endpoint = 'N/A'
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
@@ -633,6 +666,7 @@ def main():
                 "{num_rel}": num_rel,
                 "{cksum}": cksum,
                 "{branch}": branch,
+                "{endpoint}": endpoint,
                 "{acta}": acta
             }
 

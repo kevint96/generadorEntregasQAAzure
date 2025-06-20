@@ -51,11 +51,14 @@ def print_with_line_number(msg):
     st.success(f"Linea {line_number}: {msg}")
     print("")
 
-def apply_format(run,fuente,size,negrita,color):
+def apply_format(run,fuente,size,negrita,color,highlight=None):
     run.font.name = fuente  # Cambiar el nombre de la fuente
     run.font.size = Pt(size)  # Cambiar el tamaño de la fuente
     run.font.bold = negrita  # Aplicar negrita
     run.font.color.rgb = RGBColor(0, 0, color)  # Cambiar el color del texto a rojo
+    
+    if highlight:  # Color de resaltado
+        run.font.highlight_color = highlight
 
 def replace_text_in_paragraph(paragraph, replacements):
     full_text = paragraph.text
@@ -190,6 +193,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
+                
+            if key in '{endpoint}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial',10,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo    
 
             if key in '{nombre_autor_manual}':
                 paragraph.clear()  # Limpiar el párrafo
@@ -464,7 +472,7 @@ def main():
     col9, col10, col11, col12 = st.columns(4)
     with col9:
         #st.write("✅ Autorizaciones ➡️")
-        tipo_acta = st.checkbox("Tipo Acta: Azure")
+        tipo_acta = st.checkbox("Catalogación Azure")
         #st.selectbox("💻 Tipo Acta", ["Harvest", "Azure"])
         #st.subheader("✅ Autorizaciones")
         # st.text_input("🛠️ Nombre del servicio", value=valor, disabled=True)
@@ -553,9 +561,17 @@ def main():
     
     descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
+    nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
+    
+    endpoint = st.text_input("🛠️ Url OHS")
+    
     # Ruta relativa a las plantillas
+    RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
     RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
     RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
+    
+    if not nuevo_endpoint:
+        endpoint = 'N/A'
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
@@ -633,6 +649,7 @@ def main():
                 "{num_rel}": num_rel,
                 "{cksum}": cksum,
                 "{branch}": branch,
+                "{endpoint}": endpoint,
                 "{acta}": acta
             }
 
