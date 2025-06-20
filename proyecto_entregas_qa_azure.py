@@ -45,6 +45,11 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.enum.style import WD_STYLE_TYPE
 
+# Ruta relativa a las plantillas
+RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
+RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
+RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
+
 def print_with_line_number(msg):
     caller_frame = inspect.currentframe().f_back
     line_number = caller_frame.f_lineno
@@ -417,7 +422,6 @@ def guardar_autor(nuevo_autor):
 
 
 def main():
-    RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
     st.set_page_config(layout="wide")
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
@@ -583,9 +587,6 @@ def main():
     
     endpoint = st.text_input("🛠️ Url OHS")
     
-    # Ruta relativa a las plantillas
-    RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
-    RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
     
     if not nuevo_endpoint:
         endpoint = 'N/A'
