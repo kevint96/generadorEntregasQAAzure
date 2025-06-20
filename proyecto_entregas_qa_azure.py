@@ -475,24 +475,20 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        autores = cargar_autores()
-        autores_opciones = autores + ["📝 Agregar nuevo..."]
+        if "autor_agregado" not in st.session_state:
+            st.session_state.autor_agregado = False
 
-        # Si se agregó un nuevo autor, vuelve a cargar la lista
-        if st.session_state.recargar_autores:
-            autores = cargar_autores()
-            autores_opciones = autores + ["📝 Agregar nuevo..."]
-            st.session_state.recargar_autores = False
+        if st.session_state.autor_agregado:
+            st.success("Autor agregado. Recarga para ver la lista actualizada.")
 
-        nombre_autor = st.selectbox("👤 Nombre Autor", autores_opciones)
+        nombre_autor = st.selectbox("👤 Nombre Autor", cargar_autores() + ["📝 Agregar nuevo..."])
 
         if nombre_autor == "📝 Agregar nuevo...":
             nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
             if nuevo_autor:
-                if nuevo_autor.strip() not in autores:
+                if nuevo_autor.strip() not in cargar_autores():
                     guardar_autor(nuevo_autor.strip())
-                    st.session_state.recargar_autores = True
-                    st.experimental_rerun()  # 👈 aún puede usarse si estás en local o tienes versión compatible
+                    st.session_state.autor_agregado = True
                 else:
                     st.info("Ese autor ya existe.")
     with col4:
