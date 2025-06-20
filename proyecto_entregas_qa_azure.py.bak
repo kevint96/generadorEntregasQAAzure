@@ -470,7 +470,7 @@ def main():
     with col3:
         autores = cargar_autores()
         nombre_autor = st.selectbox("👤 Nombre Autor", autores + ["📝 Agregar nuevo..."])
-        if autor_seleccionado == "📝 Agregar nuevo...":
+        if nombre_autor == "📝 Agregar nuevo...":
             nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
             if nuevo_autor and st.button("Agregar autor"):
                 guardar_autor(nuevo_autor)
@@ -584,12 +584,11 @@ def main():
     descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
     nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
-    
-    endpoint = st.text_input("🛠️ Url OHS")
-    
-    
+
     if not nuevo_endpoint:
         endpoint = 'N/A'
+    else:
+        endpoint = st.text_input("🛠️ Url OHS")
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)

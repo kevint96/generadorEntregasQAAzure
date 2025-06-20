@@ -413,8 +413,11 @@ def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=Non
 def cargar_autores():
     if os.path.exists(RUTA_AUTORES):
         with open(RUTA_AUTORES, "r", encoding="utf-8") as f:
-            return sorted(set(line.strip() for line in f if line.strip()))
-    return []
+            autores = [line.strip() for line in f.readlines() if line.strip()]
+    else:
+        autores = []
+
+    return autores
 
 def guardar_autor(nuevo_autor):
     with open(RUTA_AUTORES, "a", encoding="utf-8") as f:
@@ -584,12 +587,11 @@ def main():
     descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
     nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
-    
-    endpoint = st.text_input("🛠️ Url OHS")
-    
-    
+
     if not nuevo_endpoint:
         endpoint = 'N/A'
+    else:
+        endpoint = st.text_input("🛠️ Url OHS")
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
