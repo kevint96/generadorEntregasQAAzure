@@ -470,7 +470,7 @@ def main():
     with col3:
         autores = cargar_autores()
         nombre_autor = st.selectbox("👤 Nombre Autor", autores + ["📝 Agregar nuevo..."])
-        if autor_seleccionado == "📝 Agregar nuevo...":
+        if nombre_autor == "📝 Agregar nuevo...":
             nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
             if nuevo_autor and st.button("Agregar autor"):
                 guardar_autor(nuevo_autor)
