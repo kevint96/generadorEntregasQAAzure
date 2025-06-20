@@ -164,6 +164,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial Narrow',8,True,0)  # Aplicar formato al texto del párrafo
             
+            if key in '{branch_git}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,True,0)  # Aplicar formato al texto del párrafo
+            
             if key in '{operacion}':
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
@@ -563,7 +568,7 @@ def main():
     
     branch_completo = f"{branch}/{inicial_acta}{num_hrv}_OSB12C{bo}_{nombre_servicio}_ID_{id_iniciativa}"
     
-    st.text_input("🌴 Branch git", value=branch_completo, disabled=True)
+    branch_git = st.text_input("🌴 Branch git", value=branch_completo, disabled=True)
     
     checkout = f"git checkout -b {branch_completo} origin/{branch_completo}"
     
@@ -689,6 +694,7 @@ def main():
                 "{cksum}": cksum,
                 "{branch}": branch,
                 "{endpoint}": endpoint,
+                "{branch_git}": branch_git,
                 "{acta}": acta
             }
 

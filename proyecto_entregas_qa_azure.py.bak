@@ -44,6 +44,7 @@ import copy
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.enum.style import WD_STYLE_TYPE
+from docx.enum.text import WD_COLOR_INDEX
 
 # Ruta relativa a las plantillas
 RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
