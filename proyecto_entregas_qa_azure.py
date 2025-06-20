@@ -76,9 +76,14 @@ def replace_text_in_paragraph(paragraph, replacements):
     ##st.success(f"Texto en linea: {full_text}")
     for key, value in replacements.items():
         if key in full_text:
-            ##st.success(f"full_text: {full_text}")
-            ##st.success(f"p paragraphs: {paragraph.text}")
-            ##st.success(f"clave coincide: {key}")
+            
+            if not value.strip() and full_text.strip() == '{contexto_ohs}':
+                p_element = paragraph._element
+                parent = p_element.getparent()
+                if parent is not None:
+                    parent.remove(p_element)
+                return
+            
             full_text = full_text.replace(key, str(value))  # Actualiza full_text
             
             if key in '{acta}':
@@ -622,7 +627,7 @@ def main():
         contexto_ohs = ""
     else:
         endpoint = st.text_input("🛠️ Url OHS")
-        contexto_ohs = f"Agregar el nuevo contexto {endpoint} en el ambiente de {bus}"
+        contexto_ohs = f"Agregar el nuevo contexto:\n {endpoint} en el ambiente de {bus}"
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
