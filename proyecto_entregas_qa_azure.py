@@ -165,6 +165,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
+            
+            if key in '{inicial_acta}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
                 
             if key in '{nombre_servicio2}':
                 paragraph.clear()  # Limpiar el párrafo
@@ -616,6 +621,7 @@ def main():
                 "{aut_puntual}": aut_puntual,
                 "{aut_prod}": aut_prod,
                 "{num_hrv2}": num_hrv,
+                "{inicial_acta}": inicial_acta,
                 "{nombre_servicio2}": nombre_servicio,
                 "{num_iniciativa2}": id_iniciativa,
                 "{descripcion_ajuste}": descripcion_ajuste,
