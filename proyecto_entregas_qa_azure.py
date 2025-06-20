@@ -425,7 +425,7 @@ def cargar_autores():
 
 def guardar_autor(nuevo_autor):
     with open(RUTA_AUTORES, "a", encoding="utf-8") as f:
-        f.write(f"{nuevo_autor}\n")
+        f.write(f"{nuevo_autor.strip()}\n")
 
 
 def main():
@@ -475,22 +475,27 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        if "autor_agregado" not in st.session_state:
-            st.session_state.autor_agregado = False
+        # Estado inicial
+        if "autores" not in st.session_state:
+            st.session_state.autores = cargar_autores()
 
-        if st.session_state.autor_agregado:
-            st.success("Autor agregado. Recarga para ver la lista actualizada.")
+        # Agregar opción adicional
+        opciones_autores = st.session_state.autores + ["📝 Agregar nuevo..."]
 
-        nombre_autor = st.selectbox("👤 Nombre Autor", cargar_autores() + ["📝 Agregar nuevo..."])
+        # Combo de selección
+        nombre_autor = st.selectbox("👤 Nombre del autor", opciones_autores)
 
+        # Si se escoge agregar uno nuevo
         if nombre_autor == "📝 Agregar nuevo...":
-            nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
-            if nuevo_autor:
-                if nuevo_autor.strip() not in cargar_autores():
+            nuevo_autor = st.text_input("✍️ Escribe el nuevo autor y presiona Enter:")
+
+            if nuevo_autor.strip() != "":
+                if nuevo_autor.strip() not in st.session_state.autores:
                     guardar_autor(nuevo_autor.strip())
-                    st.session_state.autor_agregado = True
+                    st.session_state.autores.append(nuevo_autor.strip())
+                    st.success(f"✅ Autor '{nuevo_autor.strip()}' agregado correctamente.")
                 else:
-                    st.info("Ese autor ya existe.")
+                    st.warning("⚠️ El autor ya existe.")
     with col4:
         bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
