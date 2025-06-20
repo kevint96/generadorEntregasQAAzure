@@ -76,12 +76,14 @@ def replace_text_in_paragraph(paragraph, replacements):
     ##st.success(f"Texto en linea: {full_text}")
     for key, value in replacements.items():
         if key in full_text:
-            
             if not value.strip():
-                # Si el valor está vacío, eliminar toda la línea que lo contiene
-                if key in full_text.strip():
-                    paragraph.text = ""  # Borra el párrafo si solo contiene esa variable
+                # Si el valor está vacío y el párrafo contiene solo la variable, elimina el párrafo
+                if full_text == key:
+                    paragraph.clear()
                     return
+                else:
+                    # Si la variable está dentro de más texto, simplemente la removemos
+                    full_text = full_text.replace(key, '')
             else:
                 full_text = full_text.replace(key, str(value))  # Actualiza full_text
                 
