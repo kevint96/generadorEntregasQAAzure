@@ -483,19 +483,19 @@ def main():
         opciones_autores = st.session_state.autores + ["📝 Agregar nuevo..."]
 
         # Combo de selección
-        nombre_autor = st.selectbox("👤 Nombre del autor", opciones_autores)
+        nombre_autor = st.selectbox("👤 Nombre del autor", cargar_autores())
 
-        # Si se escoge agregar uno nuevo
-        if nombre_autor == "📝 Agregar nuevo...":
-            nuevo_autor = st.text_input("✍️ Escribe el nuevo autor y presiona Enter:")
+        # # Si se escoge agregar uno nuevo
+        # if nombre_autor == "📝 Agregar nuevo...":
+            # nuevo_autor = st.text_input("✍️ Escribe el nuevo autor y presiona Enter:")
 
-            if nuevo_autor.strip() != "":
-                if nuevo_autor.strip() not in st.session_state.autores:
-                    guardar_autor(nuevo_autor.strip())
-                    st.session_state.autores.append(nuevo_autor.strip())
-                    st.success(f"✅ Autor '{nuevo_autor.strip()}' agregado correctamente.")
-                else:
-                    st.warning("⚠️ El autor ya existe.")
+            # if nuevo_autor.strip() != "":
+                # if nuevo_autor.strip() not in st.session_state.autores:
+                    # guardar_autor(nuevo_autor.strip())
+                    # st.session_state.autores.append(nuevo_autor.strip())
+                    # st.success(f"✅ Autor '{nuevo_autor.strip()}' agregado correctamente.")
+                # else:
+                    # st.warning("⚠️ El autor ya existe.")
     with col4:
         bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
