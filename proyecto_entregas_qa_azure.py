@@ -50,6 +50,10 @@ RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
 RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
 RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
 
+# Al principio del script, asegúrate de inicializar una bandera
+if "recargar_autores" not in st.session_state:
+    st.session_state.recargar_autores = False
+
 def print_with_line_number(msg):
     caller_frame = inspect.currentframe().f_back
     line_number = caller_frame.f_lineno
@@ -471,21 +475,24 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        autores = cargar_autores()  # <- Esta función ya hace strip() línea por línea
-
-        # Agregar opción para "Agregar nuevo"
+        autores = cargar_autores()
         autores_opciones = autores + ["📝 Agregar nuevo..."]
+
+        # Si se agregó un nuevo autor, vuelve a cargar la lista
+        if st.session_state.recargar_autores:
+            autores = cargar_autores()
+            autores_opciones = autores + ["📝 Agregar nuevo..."]
+            st.session_state.recargar_autores = False
 
         nombre_autor = st.selectbox("👤 Nombre Autor", autores_opciones)
 
-        # Si el usuario elige agregar uno nuevo
         if nombre_autor == "📝 Agregar nuevo...":
             nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
             if nuevo_autor:
                 if nuevo_autor.strip() not in autores:
-                    guardar_autor(nuevo_autor.strip())  # Guarda bien con \n
-                    st.success(f"Autor '{nuevo_autor}' agregado.")
-                    st.experimental_rerun()  # Recarga el selectbox para ver el nuevo autor
+                    guardar_autor(nuevo_autor.strip())
+                    st.session_state.recargar_autores = True
+                    st.experimental_rerun()  # 👈 aún puede usarse si estás en local o tienes versión compatible
                 else:
                     st.info("Ese autor ya existe.")
     with col4:

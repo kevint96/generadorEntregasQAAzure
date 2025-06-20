@@ -471,13 +471,23 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        autores = cargar_autores()
-        nombre_autor = st.selectbox("👤 Nombre Autor", autores + ["📝 Agregar nuevo..."])
+        autores = cargar_autores()  # <- Esta función ya hace strip() línea por línea
+
+        # Agregar opción para "Agregar nuevo"
+        autores_opciones = autores + ["📝 Agregar nuevo..."]
+
+        nombre_autor = st.selectbox("👤 Nombre Autor", autores_opciones)
+
+        # Si el usuario elige agregar uno nuevo
         if nombre_autor == "📝 Agregar nuevo...":
             nuevo_autor = st.text_input("Escribe el nombre del nuevo autor:")
-            if nuevo_autor and st.button("Agregar autor"):
-                guardar_autor(nuevo_autor)
-                st.success(f"Autor '{nuevo_autor}' agregado correctamente. Recarga para verlo en la lista.")
+            if nuevo_autor:
+                if nuevo_autor.strip() not in autores:
+                    guardar_autor(nuevo_autor.strip())  # Guarda bien con \n
+                    st.success(f"Autor '{nuevo_autor}' agregado.")
+                    st.experimental_rerun()  # Recarga el selectbox para ver el nuevo autor
+                else:
+                    st.info("Ese autor ya existe.")
     with col4:
         bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
