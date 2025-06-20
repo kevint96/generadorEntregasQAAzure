@@ -157,7 +157,7 @@ def replace_text_in_paragraph(paragraph, replacements):
             if key in '{contexto_ohs}':
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
-                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
+                apply_format(paragraph.runs[0],'Arial MT',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
                 
             if key in '{cksum}':
                 paragraph.clear()  # Limpiar el párrafo
