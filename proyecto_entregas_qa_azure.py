@@ -77,7 +77,7 @@ def replace_text_in_paragraph(paragraph, replacements):
     ##st.success(f"Texto en linea: {full_text}")
     for key, value in replacements.items():
         if key in full_text:
-            # Si el valor está vacío y la variable está sola, eliminar el párrafo completo
+            # Si valor vacío y solo contiene la variable → eliminar el párrafo
             if not value.strip() and full_text.strip() == key:
                 p_element = paragraph._element
                 parent = p_element.getparent()
@@ -91,192 +91,199 @@ def replace_text_in_paragraph(paragraph, replacements):
             else:
                 full_text = full_text.replace(key, str(value))  # Actualiza full_text
                 
+                for run in paragraph.runs:
+                    run.text = ""
+
+                # Usa el primer run o crea uno nuevo
+                run = paragraph.runs[0] if paragraph.runs else paragraph.add_run()
+                run.text = full_text
+                
                 if key in '{acta}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                 
                 if key in '{nombre_servicio}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
                     
                 if key in '{fecha_hoy}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
                     
                 if key in '{nombre_autor}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
                 
                 if key in '{num_hrv}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                 
                 if key in '{num_iniciativa}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                     
                 if key in '{NUM_INICIATIVA}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                 
                 if key in '{fecha_actual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',8,False,0)    # Aplicar formato al texto del párrafo
                     #paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.LEFT
                 
                 if key in '{descripcion_ajuste}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{descripcion_pruebas_sugeridas}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{proyecto_osb}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{num_rel}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{contexto_ohs}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
                     
                 if key in '{cksum}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{fecha_azure}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{branch}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,True,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{branch_git}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,True,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{operacion}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{commit}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{num_hrv2}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
                 
                 if key in '{inicial_acta}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{nombre_servicio2}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
 
                 if key in '{num_iniciativa2}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{nombre_servicio_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',14,True,0)  # Aplicar formato al texto del párrafo    
                 
                 if key in '{fecha_actual_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
                     
                 if key in '{endpoint}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo    
 
                 if key in '{nombre_autor_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
                 
                 if key in '{proyecto_osb_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',10,False,0)  # Aplicar formato al texto del párrafo    
 
                 if key in '{num_hrv_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{nombre_servicio3}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo    
                 
                 if key in '{num_iniciativa_manual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial',10,False,0)  # Aplicar formato al texto del párrafo 
 
                 if key in '{bus}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{prueba}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{aut_puntual}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
 
                 if key in '{aut_prod}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{num_servicenow}':
-                    paragraph.clear()  # Limpiar el párrafo
-                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                    
+                    
                     apply_format(paragraph.runs[0],'Poppins Light',8,False,0)  # Aplicar formato al texto del párrafo
             
 def print_element_content(element, element_name):
@@ -632,7 +639,7 @@ def main():
         contexto_ohs = ""
     else:
         endpoint = st.text_input("🛠️ Url OHS")
-        contexto_ohs = f"Agregar el nuevo contexto: {endpoint} en el ambiente de {bus}"
+        contexto_ohs = f"Agregar el nuevo contexto:\n {endpoint} en el ambiente de {bus}"
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
