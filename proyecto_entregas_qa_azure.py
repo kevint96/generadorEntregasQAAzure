@@ -70,14 +70,6 @@ def apply_format(run,fuente,size,negrita,color,highlight=None):
     if highlight:  # Color de resaltado
         run.font.highlight_color = highlight
 
-def safe_replace_paragraph_text(paragraph, new_text):
-    # Reemplazo seguro sin dañar la estructura
-    for run in paragraph.runs:
-        run.clear()
-    if paragraph.runs:
-        paragraph.runs[0].add_text(new_text)
-    else:
-        paragraph.add_run(new_text)
 
 def replace_text_in_paragraph(paragraph, replacements):
     full_text = paragraph.text
@@ -168,7 +160,8 @@ def replace_text_in_paragraph(paragraph, replacements):
                     apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                     
                 if key in '{contexto_ohs}':
-                    safe_replace_paragraph_text(paragraph, full_text)
+                    paragraph.clear()  # Limpiar el párrafo
+                    paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                     apply_format(paragraph.runs[0],'Arial MT',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
                     
                 if key in '{cksum}':
