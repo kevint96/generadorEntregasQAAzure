@@ -79,7 +79,9 @@ def replace_text_in_paragraph(paragraph, replacements):
             # Si el valor está vacío y la variable está sola, eliminar el párrafo completo
             if not value.strip() and full_text.strip() == key:
                 p_element = paragraph._element
-                p_element.getparent().remove(p_element)
+                parent = p_element.getparent()
+                if parent is not None:
+                    parent.remove(p_element)
                 return
 
             # Si el valor está vacío pero la variable está entre más texto, simplemente eliminar la variable
@@ -629,7 +631,7 @@ def main():
         contexto_ohs = ""
     else:
         endpoint = st.text_input("🛠️ Url OHS")
-        contexto_ohs = f"Agregar el nuevo contexto {endpoint} en el ambiente de {bus}"
+        contexto_ohs = f"Agregar el nuevo contexto:\n {endpoint} en el ambiente de {bus}"
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
