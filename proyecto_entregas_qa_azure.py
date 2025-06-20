@@ -149,6 +149,11 @@ def replace_text_in_paragraph(paragraph, replacements):
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
                 apply_format(paragraph.runs[0],'Arial Narrow',8,False,0)  # Aplicar formato al texto del párrafo
                 
+            if key in '{contexto_ohs}':
+                paragraph.clear()  # Limpiar el párrafo
+                paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
+                apply_format(paragraph.runs[0],'Arial Narrow',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
+                
             if key in '{cksum}':
                 paragraph.clear()  # Limpiar el párrafo
                 paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
@@ -611,11 +616,14 @@ def main():
     descripcion_pruebas_sugeridas = st.text_area("📝 Descripción pruebas sugeridas")
     
     nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
+    
+    contexto_ohs = ""
 
     if not nuevo_endpoint:
         endpoint = 'N/A'
     else:
         endpoint = st.text_input("🛠️ Url OHS")
+        contexto_ohs = f"Agregar el nuevo contexto "{nuevo_endpoint} "en el ambiente de "{bus}"
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)
@@ -695,6 +703,7 @@ def main():
                 "{branch}": branch,
                 "{endpoint}": endpoint,
                 "{branch_git}": branch_git,
+                "{contexto_ohs}": contexto_ohs,
                 "{acta}": acta
             }
 
