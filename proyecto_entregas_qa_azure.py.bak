@@ -79,7 +79,9 @@ def replace_text_in_paragraph(paragraph, replacements):
             # Si el valor está vacío y la variable está sola, eliminar el párrafo completo
             if not value.strip() and full_text.strip() == key:
                 p_element = paragraph._element
-                p_element.getparent().remove(p_element)
+                parent = p_element.getparent()
+                if parent is not None:
+                    parent.remove(p_element)
                 return
 
             # Si el valor está vacío pero la variable está entre más texto, simplemente eliminar la variable
@@ -159,7 +161,7 @@ def replace_text_in_paragraph(paragraph, replacements):
                 if key in '{contexto_ohs}':
                     paragraph.clear()  # Limpiar el párrafo
                     paragraph.add_run(full_text)  # Agregar el texto actualizado al párrafo
-                    apply_format(paragraph.runs[0],'Arial Narrow',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
+                    apply_format(paragraph.runs[0],'Arial MT',8,False,0,WD_COLOR_INDEX.YELLOW)  # Aplicar formato al texto del párrafo
                     
                 if key in '{cksum}':
                     paragraph.clear()  # Limpiar el párrafo
