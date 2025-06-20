@@ -622,7 +622,7 @@ def main():
         contexto_ohs = ""
     else:
         endpoint = st.text_input("🛠️ Url OHS")
-        contexto_ohs = f"Agregar el nuevo contexto "{nuevo_endpoint} "en el ambiente de "{bus}"
+        contexto_ohs = f"Agregar el nuevo contexto{nuevo_endpoint}en el ambiente de {bus}"
 
     # Carga directa (sin subir)
     plantilla_doc = Document(RUTA_BASE)

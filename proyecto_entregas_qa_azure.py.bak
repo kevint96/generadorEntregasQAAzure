@@ -617,10 +617,9 @@ def main():
     
     nuevo_endpoint = st.checkbox("Nuevo endpoint OHS")
     
-    contexto_ohs = ""
-
     if not nuevo_endpoint:
         endpoint = 'N/A'
+        contexto_ohs = ""
     else:
         endpoint = st.text_input("🛠️ Url OHS")
         contexto_ohs = f"Agregar el nuevo contexto "{nuevo_endpoint} "en el ambiente de "{bus}"
