@@ -476,9 +476,36 @@ def obtener_hoja_autores():
 
     return hoja
 
+@st.dialog("➕ Agregar nuevo autor")
+def dialogo_nuevo_autor():
+
+    nuevo_autor = st.text_input(
+        "Nombre del autor"
+    )
+
+    if st.button("Guardar"):
+
+        if not nuevo_autor.strip():
+            st.warning("Ingrese un nombre")
+            return
+
+        if guardar_autor(nuevo_autor):
+
+            st.session_state.autor_seleccionado = nuevo_autor.strip()
+
+            st.success("Autor agregado")
+
+            st.rerun()
+
+        else:
+            st.warning("El autor ya existe")
+
 def main():
     st.set_page_config(layout="wide")
     #st.write(cargar_autores())
+
+    if "autor_seleccionado" not in st.session_state:
+        st.session_state.autor_seleccionado = None
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
         st.session_state["num_hrv"] = "XXXX"
@@ -524,49 +551,36 @@ def main():
     with col2:
         operacion = st.text_input("📡 Operación")
     with col3:
-        # Estado inicial
-        if "autores" not in st.session_state:
-            st.session_state.autores = cargar_autores()
+        autores = cargar_autores()
 
-        # Agregar opción adicional
-        opciones_autores = st.session_state.autores + ["📝 Agregar nuevo..."]
+        col_autor, col_boton = st.columns([5,1])
 
-        # Combo de selección
-        nombre_autor = st.selectbox("👤 Nombre del autor", opciones_autores)
+        with col_autor:
 
-        if nombre_autor == "📝 Agregar nuevo...":
+            if (
+                st.session_state.autor_seleccionado
+                and st.session_state.autor_seleccionado in autores
+            ):
+                index_default = autores.index(
+                    st.session_state.autor_seleccionado
+                )
+            else:
+                index_default = 0
 
-            nuevo_autor = st.text_input(
-                "✍️ Nuevo autor"
+            nombre_autor = st.selectbox(
+                "👤 Nombre del autor",
+                autores,
+                index=index_default
             )
 
-            if st.button("➕ Agregar autor"):
+        with col_boton:
 
-                if nuevo_autor.strip():
+            st.write("")
 
-                    if guardar_autor(nuevo_autor):
+            st.write("")
 
-                        st.success(
-                            f"✅ Autor '{nuevo_autor}' agregado correctamente"
-                        )
-
-                        st.rerun()
-
-                    else:
-                        st.warning(
-                            "⚠️ El autor ya existe"
-                        )
-        # # Si se escoge agregar uno nuevo
-        # if nombre_autor == "📝 Agregar nuevo...":
-            # nuevo_autor = st.text_input("✍️ Escribe el nuevo autor y presiona Enter:")
-
-            # if nuevo_autor.strip() != "":
-                # if nuevo_autor.strip() not in st.session_state.autores:
-                    # guardar_autor(nuevo_autor.strip())
-                    # st.session_state.autores.append(nuevo_autor.strip())
-                    # st.success(f"✅ Autor '{nuevo_autor.strip()}' agregado correctamente.")
-                # else:
-                    # st.warning("⚠️ El autor ya existe.")
+            if st.button("➕"):
+                dialogo_nuevo_autor()
     with col4:
         bus = st.selectbox("💻 BUS", ["Otorgamiento", "Digital"])
 
