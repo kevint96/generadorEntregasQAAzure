@@ -458,8 +458,8 @@ def conectar_google_sheets():
         "https://www.googleapis.com/auth/drive"
     ]
 
-    creds = Credentials.from_service_account_file(
-        "credentials.json",
+    creds = Credentials.from_service_account_info(
+        dict(st.secrets["gcp_service_account"]),
         scopes=scopes
     )
 
