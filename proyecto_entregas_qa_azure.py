@@ -655,9 +655,9 @@ def main():
 
     proyectos_default = pd.DataFrame({
         "Proyecto OSB": ["", "", "", ""],
+        "Commit": ["", "", "", ""],
         "Release": ["", "", "", ""],
         "Checksum": ["", "", "", ""],
-        "Commit": ["", "", "", ""],
         "Fecha Azure": ["", "", "", ""]
     })
 
