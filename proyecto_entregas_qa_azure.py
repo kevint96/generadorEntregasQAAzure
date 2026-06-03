@@ -51,7 +51,7 @@ from docx.enum.text import WD_COLOR_INDEX
 RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
 RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
 RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
-SHEET_ID = "1okOylzxtJeXW3QqtQ8k0ms7QHVQ4_gqkiFs8zPnhKmo/edit?pli=1&gid=1762912063#gid=1762912063"
+SHEET_ID = "1okOylzxtJeXW3QqtQ8k0ms7QHVQ4_gqkiFs8zPnhKmo"
 
 # Al principio del script, asegúrate de inicializar una bandera
 if "recargar_autores" not in st.session_state:
