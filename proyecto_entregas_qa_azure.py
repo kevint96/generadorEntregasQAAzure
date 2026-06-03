@@ -18,6 +18,7 @@ import inspect
 import os
 import xml.etree.ElementTree as ET
 import gspread
+from google.oauth2.service_account import Credentials
 import time  # Importar el módulo time
 import logging
 import re
@@ -50,6 +51,7 @@ from docx.enum.text import WD_COLOR_INDEX
 RUTA_BASE = os.path.join("plantillas", "plantilla_base.docx")
 RUTA_MANUAL = os.path.join("plantillas", "plantilla_manual.docx")
 RUTA_AUTORES = os.path.join("plantillas", "autores.txt")
+SHEET_ID = "1okOylzxtJeXW3QqtQ8k0ms7QHVQ4_gqkiFs8zPnhKmo/edit?pli=1&gid=1762912063#gid=1762912063"
 
 # Al principio del script, asegúrate de inicializar una bandera
 if "recargar_autores" not in st.session_state:
@@ -431,21 +433,54 @@ def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=Non
     return output_path
 
 def cargar_autores():
-    if os.path.exists(RUTA_AUTORES):
-        with open(RUTA_AUTORES, "r", encoding="utf-8") as f:
-            autores = [line.strip() for line in f.readlines() if line.strip()]
-    else:
-        autores = []
+    # if os.path.exists(RUTA_AUTORES):
+    #     with open(RUTA_AUTORES, "r", encoding="utf-8") as f:
+    #         autores = [line.strip() for line in f.readlines() if line.strip()]
+    # else:
+    #     autores = []
 
-    return autores
+    # return autores
+    hoja = obtener_hoja_autores()
+
+    valores = hoja.col_values(1)
+
+    return valores[1:] if len(valores) > 1 else []
 
 def guardar_autor(nuevo_autor):
-    with open(RUTA_AUTORES, "a", encoding="utf-8") as f:
-        f.write(f"{nuevo_autor.strip()}\n")
+    hoja = obtener_hoja_autores()
 
+    hoja.append_row([nuevo_autor])
+
+def conectar_google_sheets():
+
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    creds = Credentials.from_service_account_file(
+        "credentials.json",
+        scopes=scopes
+    )
+
+    cliente = gspread.authorize(creds)
+
+    return cliente
+
+def obtener_hoja_autores():
+
+    cliente = conectar_google_sheets()
+
+    spreadsheet = cliente.open_by_key(SHEET_ID)
+
+    hoja = spreadsheet.worksheet("StreamlitAutores")
+
+    return hoja
 
 def main():
     st.set_page_config(layout="wide")
+    st.success(cargar_autores())
+    st.write(cargar_autores())
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
         st.session_state["num_hrv"] = "XXXX"
