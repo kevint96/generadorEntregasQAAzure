@@ -479,7 +479,6 @@ def obtener_hoja_autores():
 
 def main():
     st.set_page_config(layout="wide")
-    st.success(cargar_autores())
     st.write(cargar_autores())
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
