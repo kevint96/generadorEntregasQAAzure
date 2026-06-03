@@ -599,11 +599,7 @@ def main():
     # Fila 3
     col9, col10, col11, col12 = st.columns(4)
     with col9:
-        #st.write("✅ Autorizaciones ➡️")
-        tipo_acta = st.checkbox("Catalogación Azure")
-        #st.selectbox("💻 Tipo Acta", ["Harvest", "Azure"])
-        #st.subheader("✅ Autorizaciones")
-        # st.text_input("🛠️ Nombre del servicio", value=valor, disabled=True)
+        tipo_acta = st.checkbox("Catalogación Azure",value=True)
     with col10:
         prueba = st.checkbox("📡 Pruebas (Certificación)")
     with col11:
