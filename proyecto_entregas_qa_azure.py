@@ -433,13 +433,6 @@ def generar_documento(doc, nombre_resultado, reemplazos, proyectos_osb_filas=Non
     return output_path
 
 def cargar_autores():
-    # if os.path.exists(RUTA_AUTORES):
-    #     with open(RUTA_AUTORES, "r", encoding="utf-8") as f:
-    #         autores = [line.strip() for line in f.readlines() if line.strip()]
-    # else:
-    #     autores = []
-
-    # return autores
     hoja = obtener_hoja_autores()
 
     valores = hoja.col_values(1)
@@ -449,7 +442,13 @@ def cargar_autores():
 def guardar_autor(nuevo_autor):
     hoja = obtener_hoja_autores()
 
-    hoja.append_row([nuevo_autor])
+    autores_actuales = hoja.col_values(1)
+
+    if nuevo_autor.strip() not in autores_actuales:
+        hoja.append_row([nuevo_autor.strip()])
+        return True
+
+    return False
 
 def conectar_google_sheets():
 
@@ -479,7 +478,7 @@ def obtener_hoja_autores():
 
 def main():
     st.set_page_config(layout="wide")
-    st.write(cargar_autores())
+    #st.write(cargar_autores())
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
         st.session_state["num_hrv"] = "XXXX"
@@ -533,8 +532,30 @@ def main():
         opciones_autores = st.session_state.autores + ["📝 Agregar nuevo..."]
 
         # Combo de selección
-        nombre_autor = st.selectbox("👤 Nombre del autor", cargar_autores())
+        nombre_autor = st.selectbox("👤 Nombre del autor", opciones_autores)
 
+        if nombre_autor == "📝 Agregar nuevo...":
+
+            nuevo_autor = st.text_input(
+                "✍️ Nuevo autor"
+            )
+
+            if st.button("➕ Agregar autor"):
+
+                if nuevo_autor.strip():
+
+                    if guardar_autor(nuevo_autor):
+
+                        st.success(
+                            f"✅ Autor '{nuevo_autor}' agregado correctamente"
+                        )
+
+                        st.rerun()
+
+                    else:
+                        st.warning(
+                            "⚠️ El autor ya existe"
+                        )
         # # Si se escoge agregar uno nuevo
         # if nombre_autor == "📝 Agregar nuevo...":
             # nuevo_autor = st.text_input("✍️ Escribe el nuevo autor y presiona Enter:")
