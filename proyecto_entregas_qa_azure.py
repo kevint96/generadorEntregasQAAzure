@@ -508,7 +508,7 @@ def main():
         st.session_state.autor_seleccionado = None
     
     if "num_hrv" not in st.session_state or st.session_state["num_hrv"].strip() == "":
-        st.session_state["num_hrv"] = "XXXX"
+        st.session_state["num_hrv"] = "XXXXX"
     # Centrar título con HTML + CSS
     st.markdown(
         """
